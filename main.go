@@ -6,7 +6,15 @@ import (
 )
 
 func main() {
-	p1()
+	p := 2
+	switch p {
+	case 1:
+		p1()
+	case 2:
+		p2()
+	default:
+		fmt.Println("おわり！")
+	}
 }
 
 func p1() {
@@ -24,4 +32,33 @@ func p1() {
 		"Messi": 30,
 	}
 	fmt.Printf("%T %v", m, m)
+}
+
+func p2() {
+	//Q1. 以下のスライスから最も小さい数を返すコード
+	l := []int{100, 300, 23, 11, 23, 2, 4, 6, 4}
+	temp := l[0]
+	for i := 1; i < len(l); i++ {
+		if temp > l[i] {
+			temp = l[i]
+		}
+	}
+	fmt.Printf("Q1の答えは%v", temp)
+
+	fmt.Println()
+
+	//Q2. 以下の果物の価格の合計を出力するコードを書いてください。
+	m := map[string]int{
+		"apple":  200,
+		"banana": 300,
+		"grapes": 150,
+		"orange": 80,
+		"papaya": 500,
+		"kiwi":   90,
+	}
+	sum := 0
+	for _, v := range m {
+		sum += v
+	}
+	fmt.Printf("Q2の答えは%v", sum)
 }
