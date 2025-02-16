@@ -6,12 +6,14 @@ import (
 )
 
 func main() {
-	p := 2
+	p := 3
 	switch p {
 	case 1:
 		p1()
 	case 2:
 		p2()
+	case 3:
+		p3()
 	default:
 		fmt.Println("おわり！")
 	}
@@ -61,4 +63,22 @@ func p2() {
 		sum += v
 	}
 	fmt.Printf("Q2の答えは%v", sum)
+}
+
+type Vertex struct {
+	x, y int
+}
+
+func (v Vertex) Plus() int {
+	return v.x + v.y
+}
+
+func (v Vertex) String() string {
+	return fmt.Sprintf("X is %d! Y is %d!", v.x, v.y)
+}
+
+func p3() {
+	v := Vertex{3, 4}
+	fmt.Println(v.Plus())
+	fmt.Println(v)
 }
