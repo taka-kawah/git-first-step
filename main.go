@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	p := 3
+	p := 4
 	switch p {
 	case 1:
 		p1()
@@ -14,6 +14,8 @@ func main() {
 		p2()
 	case 3:
 		p3()
+	case 4:
+		p4()
 	default:
 		fmt.Println("おわり！")
 	}
@@ -81,4 +83,22 @@ func p3() {
 	v := Vertex{3, 4}
 	fmt.Println(v.Plus())
 	fmt.Println(v)
+}
+
+func goroutine(s []string, c chan string) {
+	sum := ""
+	for _, v := range s {
+		sum += v
+		c <- sum
+	}
+	close(c)
+}
+
+func p4() {
+	words := []string{"test1!", "test2!", "test3!", "test4!"}
+	c := make(chan string)
+	go goroutine(words, c)
+	for w := range c {
+		fmt.Println(w)
+	}
 }
