@@ -165,10 +165,13 @@ func gr2(c chan string) {
 }
 
 func p6() {
+	defer fmt.Println("END")
 	c1 := make(chan string)
 	c2 := make(chan string)
 	go gr1(c1)
 	go gr2(c2)
+
+	timeout := time.After(10 * time.Second)
 
 	for {
 		//同時に到着したパケットを分けて取得
@@ -177,6 +180,13 @@ func p6() {
 			fmt.Println(msg1)
 		case msg2 := <-(c2):
 			fmt.Println(msg2)
+		case <-timeout:
+			fmt.Println("time has come...")
+			return
+		default:
+			fmt.Println("Quiet...")
 		}
+		time.Sleep(500 * time.Millisecond)
 	}
+
 }
