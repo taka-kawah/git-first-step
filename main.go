@@ -3,11 +3,12 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"sync"
 	"time"
 )
 
 func main() {
-	p := 6
+	p := 7
 	switch p {
 	case 1:
 		p1()
@@ -21,6 +22,8 @@ func main() {
 		p5()
 	case 6:
 		p6()
+	case 7:
+		p7()
 	default:
 		fmt.Println("おわり！")
 	}
@@ -189,4 +192,41 @@ func p6() {
 		time.Sleep(500 * time.Millisecond)
 	}
 
+}
+
+type Counter struct {
+	v   map[string]int
+	mux sync.Mutex
+}
+
+func (c *Counter) Inc(key string) {
+	//専有
+	c.mux.Lock()
+	defer c.mux.Unlock()
+	c.v[key]++
+}
+
+func (c *Counter) getv(key string) int {
+	//専有
+	c.mux.Lock()
+	defer c.mux.Unlock()
+	return c.v[key]
+}
+
+func p7() {
+	c := Counter{v: make(map[string]int)}
+
+	go func() {
+		for i := 0; i < 10; i++ {
+			c.Inc("key")
+		}
+	}()
+
+	go func() {
+		for i := 0; i < 10; i++ {
+			c.Inc("key")
+		}
+	}()
+	time.Sleep(1 * time.Second)
+	fmt.Println(&c, c.getv("key"))
 }
