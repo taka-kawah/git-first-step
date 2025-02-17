@@ -3,10 +3,11 @@ package main
 import (
 	"fmt"
 	"reflect"
+	"time"
 )
 
 func main() {
-	p := 5
+	p := 6
 	switch p {
 	case 1:
 		p1()
@@ -18,6 +19,8 @@ func main() {
 		p4()
 	case 5:
 		p5()
+	case 6:
+		p6()
 	default:
 		fmt.Println("おわり！")
 	}
@@ -142,5 +145,38 @@ func p5() {
 
 	for r := range third {
 		fmt.Println(r)
+	}
+}
+
+func gr1(c chan string) {
+	for {
+		//ネットワークからくるパケットを延々と取得し続けるイメージ
+		c <- "packet from 1"
+		time.Sleep(1 * time.Second)
+	}
+}
+
+func gr2(c chan string) {
+	for {
+		//ネットワークからくるパケットを延々と取得し続けるイメージ
+		c <- "packet from 2"
+		time.Sleep(1 * time.Second)
+	}
+}
+
+func p6() {
+	c1 := make(chan string)
+	c2 := make(chan string)
+	go gr1(c1)
+	go gr2(c2)
+
+	for {
+		//同時に到着したパケットを分けて取得
+		select {
+		case msg1 := <-(c1):
+			fmt.Println(msg1)
+		case msg2 := <-(c2):
+			fmt.Println(msg2)
+		}
 	}
 }
