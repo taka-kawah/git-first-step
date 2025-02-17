@@ -6,7 +6,7 @@ import (
 )
 
 func main() {
-	p := 4
+	p := 5
 	switch p {
 	case 1:
 		p1()
@@ -16,6 +16,8 @@ func main() {
 		p3()
 	case 4:
 		p4()
+	case 5:
+		p5()
 	default:
 		fmt.Println("おわり！")
 	}
@@ -100,5 +102,45 @@ func p4() {
 	go goroutine(words, c)
 	for w := range c {
 		fmt.Println(w)
+	}
+}
+
+func producer(first chan<- int) {
+	defer close(first)
+	for i := 0; i < 10; i++ {
+		fmt.Println("firstチャンネルに入れる", i)
+		first <- i
+	}
+}
+
+func multi2(first <-chan int, second chan<- int) {
+	defer close(second)
+	for i := range first {
+		temp := i * 2
+		fmt.Println("secondチャンネルに入れる", temp)
+		second <- temp
+	}
+}
+
+func multi4(second <-chan int, third chan<- int) {
+	defer close(third)
+	for i := range second {
+		temp := i * 4
+		fmt.Println("thirdチャンネルに入れる", temp)
+		third <- temp
+	}
+}
+
+func p5() {
+	first := make(chan int)
+	second := make(chan int)
+	third := make(chan int)
+
+	go producer(first)
+	go multi2(first, second)
+	go multi4(second, third)
+
+	for r := range third {
+		fmt.Println(r)
 	}
 }
